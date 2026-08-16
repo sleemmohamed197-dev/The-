@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Leveling Quest System</title>
+    <style>
+        :root {
+            --bg-color: #06070d;
+            --panel-bg: rgba(13, 11, 26, 0.85);
+            --primary-purple: #9d4edd;
+            --glow-purple: #c77dff;
+            --neon-green: #00ff66;
+            --text-color: #e0e1dd;
+            --border-purple: #7b2cbf;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, rgba(123, 44, 191, 0.15) 0%, transparent 80%);
+        }
+
+        .system-window {
+            width: 100%;
+            max-width: 520px;
+            background: var(--panel-bg);
+            border: 2px solid var(--border-purple);
+            box-shadow: 0 0 25px rgba(157, 78, 221, 0.4), inset 0 0 15px rgba(157, 78, 221, 0.2);
+            border-radius: 4px;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Modal Overlay for Player Title Input */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(4, 5, 10, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            border: 2px solid var(--glow-purple);
+            padding: 30px;
+            border-radius: 6px;
+            text-align: center;
+            width: 85%;
+            max-width: 380px;
+            box-shadow: 0 0 30px rgba(199, 125, 255, 0.5);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--glow-purple);
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            background: #0d081a;
+            border: 1px solid var(--border-purple);
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .modal-input:focus {
+            border-color: var(--glow-purple);
+            box-shadow: 0 0 10px var(--glow-purple);
+        }
+
+        .modal-btn {
+            background: var(--primary-purple);
+            color: #fff;
+            border: 1px solid var(--glow-purple);
+            padding: 10px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            width: 100%;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--primary-purple);
+        }
+
+        .modal-btn:hover {
+            background: var(--glow-purple);
+            color: #06070d;
+            box-shadow: 0 0 15px var(--glow-purple);
+        }
+
+        .system-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-purple);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .player-title-display {
+            font-size: 13px;
+            color: var(--glow-purple);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            text-shadow: 0 0 8px var(--primary-purple);
+            font-weight: bold;
+        }
+
+        .system-title {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--glow-purple), 0 0 20px var(--primary-purple);
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        .top-stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(20, 15, 38, 0.9);
+            border: 1px solid var(--border-purple);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--glow-purple);
+            margin-bottom: 12px;
+        }
+
+        .mode-banner {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .mode-banner.trial {
+            background: rgba(255, 204, 0, 0.15);
+            border: 1px solid #ffcc00;
+            color: #ffcc00;
+        }
+
+        .mode-banner.official {
+            background: rgba(0, 255, 102, 0.15);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .rank-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .rank-badge {
+            font-size: 22px;
+            color: var(--glow-purple);
+            text-shadow: 0 0 8px var(--primary-purple);
+        }
+
+        .exp-container {
+            margin-top: 10px;
+        }
+
+        .exp-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom:
