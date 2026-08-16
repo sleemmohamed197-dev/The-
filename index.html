@@ -41,7 +41,7 @@
             backdrop-filter: blur(10px);
         }
 
-        /* Modal Overlay for Player Title Input */
+        /* Modal Overlay for Player Title & Start Date Setup */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -77,16 +77,25 @@
             text-shadow: 0 0 10px var(--glow-purple);
         }
 
+        .modal-label {
+            display: block;
+            font-size: 12px;
+            color: var(--glow-purple);
+            margin-bottom: 5px;
+            text-align: left;
+            font-weight: bold;
+        }
+
         .modal-input {
             width: 100%;
             padding: 10px;
             background: #0d081a;
             border: 1px solid var(--border-purple);
             color: #fff;
-            font-size: 16px;
+            font-size: 15px;
             text-align: center;
             border-radius: 3px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             outline: none;
             box-sizing: border-box;
         }
@@ -109,6 +118,7 @@
             border-radius: 3px;
             transition: all 0.3s ease;
             box-shadow: 0 0 10px var(--primary-purple);
+            margin-top: 10px;
         }
 
         .modal-btn:hover {
@@ -202,4 +212,734 @@
             display: flex;
             justify-content: space-between;
             font-size: 12px;
-            margin-bottom:
+            margin-bottom: 5px;
+            color: #a0a0a0;
+        }
+
+        .exp-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: #120c24;
+            border: 1px solid var(--border-purple);
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: inset 0 0 5px #000;
+        }
+
+        .exp-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--border-purple), var(--glow-purple));
+            box-shadow: 0 0 10px var(--glow-purple);
+            transition: width 0.4s ease-in-out;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(20, 15, 38, 0.8);
+            border: 1px solid var(--border-purple);
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background: var(--primary-purple);
+            color: #fff;
+            box-shadow: 0 0 15px var(--glow-purple);
+            border-color: var(--glow-purple);
+        }
+
+        .sub-selection {
+            display: none;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sub-selection.active {
+            display: flex;
+        }
+
+        .sub-btn {
+            flex: 1;
+            padding: 8px;
+            background: rgba(40, 20, 70, 0.6);
+            border: 1px solid var(--border-purple);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .sub-btn:hover, .sub-btn.active {
+            background: var(--primary-purple);
+            color: #fff;
+            box-shadow: 0 0 10px var(--primary-purple);
+        }
+
+        .quest-list {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quest-list.active {
+            display: flex;
+        }
+
+        .subcategory-group {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .subcategory-group.active {
+            display: flex;
+        }
+
+        .quest-item {
+            background: rgba(18, 14, 33, 0.7);
+            border: 1px solid rgba(157, 78, 221, 0.3);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 3px;
+            transition: border-color 0.3s ease;
+        }
+
+        .quest-item:hover {
+            border-color: var(--glow-purple);
+        }
+
+        .quest-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quest-name {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .quest-reward {
+            font-size: 11px;
+            color: var(--neon-green);
+            margin-top: 3px;
+            text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
+        }
+
+        .checkbox-container {
+            position: relative;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .checkbox-container input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 22px;
+            width: 22px;
+            background-color: #0d081a;
+            border: 2px solid var(--border-purple);
+            border-radius: 2px;
+            box-shadow: inset 0 0 5px #000;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-container:hover .checkmark {
+            border-color: var(--glow-purple);
+            box-shadow: 0 0 8px var(--glow-purple);
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: rgba(123, 44, 191, 0.3);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .checkbox-container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .checkbox-container .checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 12px;
+            border: solid var(--neon-green);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            filter: drop-shadow(0 0 3px var(--neon-green));
+        }
+
+        .quest-item.completed .quest-name {
+            text-decoration: line-through;
+            color: #707070;
+        }
+
+        .section-header {
+            font-size: 12px;
+            color: var(--glow-purple);
+            text-shadow: 0 0 5px var(--primary-purple);
+            margin-bottom: 5px;
+            border-bottom: 1px solid var(--border-purple);
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Player System Setup Modal -->
+<div id="title-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-title">SYSTEM INITIALIZATION</div>
+        
+        <label class="modal-label">PLAYER TITLE</label>
+        <input type="text" id="modal-title-input" class="modal-input" placeholder="e.g. SHADOW MONARCH" autocomplete="off">
+        
+        <label class="modal-label">START DATE</label>
+        <input type="date" id="modal-date-input" class="modal-input">
+        
+        <button class="modal-btn" onclick="saveSystemSetup()">Initialize System</button>
+    </div>
+</div>
+
+<div class="system-window">
+    <div class="system-header">
+        <div class="player-title-display" id="header-player-title">[ UNKNOWN PLAYER ]</div>
+        <h1 class="system-title">QUEST LOG</h1>
+        
+        <div class="top-stats-bar">
+            <span id="day-counter-display">DAY 1 / 288</span>
+            <span id="date-display">--/--/----</span>
+        </div>
+
+        <div id="mode-banner" class="mode-banner trial">
+            Trial Period (Resets at 12:00 AM)
+        </div>
+
+        <div class="rank-info">
+            <span>RANK: <span class="rank-badge" id="rank-display">F</span></span>
+            <span>RANK TARGET: <span id="rank-duration">20 Days</span></span>
+        </div>
+
+        <div class="exp-container">
+            <div class="exp-label">
+                <span>RANK XP PROGRESS (Min 70% to Pass)</span>
+                <span id="exp-text">0 / 300 XP (0%)</span>
+            </div>
+            <div class="exp-bar-bg">
+                <div class="exp-bar-fill" id="exp-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('academic', event)">Academic</button>
+        <button class="tab-btn" onclick="switchTab('religious', event)">Religious</button>
+        <button class="tab-btn" onclick="switchTab('physical', event)">Physical</button>
+    </div>
+
+    <!-- Academic Quests -->
+    <div id="academic" class="quest-list active">
+        <div class="sub-selection active" id="academic-subs">
+            <button class="sub-btn active" onclick="switchAcademicSub('schoolday', event)">School Day</button>
+            <button class="sub-btn" onclick="switchAcademicSub('dayoff', event)">Day Off</button>
+        </div>
+
+        <div id="schoolday" class="subcategory-group active">
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Early Wake Up (4:00 AM)</span>
+                    <span class="quest-reward">+1.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Morning Session (6:00 - 7:00 AM)</span>
+                    <span class="quest-reward">+1.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Study Session 1 (2:00 - 6:00 PM)</span>
+                    <span class="quest-reward">+4.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="4.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Study Session 2 (6:30 - 8:30 PM)</span>
+                    <span class="quest-reward">+2.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="2.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Sleep Schedule (10:00 PM)</span>
+                    <span class="quest-reward">+1.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+
+        <div id="dayoff" class="subcategory-group">
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Early Wake Up (4:00 AM)</span>
+                    <span class="quest-reward">+1.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Study Session 1 (6:00 - 10:00 AM)</span>
+                    <span class="quest-reward">+4.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="4.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Study Session 2 (10:30 AM - 2:00 PM)</span>
+                    <span class="quest-reward">+3.5 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="3.5" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Reading & Free Study</span>
+                    <span class="quest-reward">+1.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Review & Summarize</span>
+                    <span class="quest-reward">+4.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="4.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="quest-item">
+                <div class="quest-details">
+                    <span class="quest-name">Sleep Schedule (10:00 PM)</span>
+                    <span class="quest-reward">+1.0 XP</span>
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Religious Quests -->
+    <div id="religious" class="quest-list">
+        <div class="section-header">Required & Daily Goals</div>
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Fajr Prayer</span>
+                <span class="quest-reward">+1.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Dhuhr Prayer</span>
+                <span class="quest-reward">+1.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Asr Prayer</span>
+                <span class="quest-reward">+1.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Maghrib Prayer</span>
+                <span class="quest-reward">+1.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Isha Prayer</span>
+                <span class="quest-reward">+1.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Morning & Evening Athkar</span>
+                <span class="quest-reward">+2.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="2.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Daily Quran Portion</span>
+                <span class="quest-reward">+2.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="2.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Physical Quests -->
+    <div id="physical" class="quest-list">
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Gym Workout Routine</span>
+                <span class="quest-reward">+3.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="3.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <div class="quest-item">
+            <div class="quest-details">
+                <span class="quest-name">Rest & Recovery Day</span>
+                <span class="quest-reward">+1.0 XP</span>
+            </div>
+            <label class="checkbox-container">
+                <input type="checkbox" data-xp="1.0" onchange="toggleQuest(this)">
+                <span class="checkmark"></span>
+            </label>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let playerTitle = localStorage.getItem('sys_playerTitle') || '';
+    let savedStartDateStr = localStorage.getItem('sys_startDate') || '';
+    
+    let rankIndex = parseInt(localStorage.getItem('sys_rankIndex')) || 0;
+    let rankXP = parseFloat(localStorage.getItem('sys_rankXP')) || 0;
+    let daysInCurrentRank = parseInt(localStorage.getItem('sys_daysInRank')) || 0;
+    let lastProcessedDateStr = localStorage.getItem('sys_lastProcessedDate') || '';
+
+    let startDate = savedStartDateStr ? new Date(savedStartDateStr) : null;
+    if (startDate) startDate.setHours(0, 0, 0, 0);
+
+    let ranksConfig = [];
+
+    function calculateDynamicRanks(totalDays) {
+        // F Rank is fixed to 20 days
+        const fDays = 20;
+        const remainingDays = Math.max(0, totalDays - fDays);
+        
+        // Golden ratio / Progression distribution weights for E, D, C, B, A
+        const weights = [1, 1.35, 1.7, 2.05, 2.9]; 
+        const totalWeight = weights.reduce((a, b) => a + b, 0);
+
+        ranksConfig = [
+            { rank: 'F', days: fDays, maxDailyXP: 15 },
+            { rank: 'E', days: Math.round((weights[0] / totalWeight) * remainingDays), maxDailyXP: 15 },
+            { rank: 'D', days: Math.round((weights[1] / totalWeight) * remainingDays), maxDailyXP: 15 },
+            { rank: 'C', days: Math.round((weights[2] / totalWeight) * remainingDays), maxDailyXP: 15 },
+            { rank: 'B', days: Math.round((weights[3] / totalWeight) * remainingDays), maxDailyXP: 15 },
+            { rank: 'A', days: Math.round((weights[4] / totalWeight) * remainingDays), maxDailyXP: 15 },
+            { rank: 'S', days: 0, maxDailyXP: 15 } // Final Rank
+        ];
+    }
+
+    function getFormattedDate(d) {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function initSystem() {
+        if (!playerTitle || !savedStartDateStr) {
+            document.getElementById('title-modal').style.display = 'flex';
+            // Set default date input to today
+            document.getElementById('modal-date-input').value = getFormattedDate(new Date());
+            return;
+        }
+
+        document.getElementById('header-player-title').innerText = `[ ${playerTitle} ]`;
+        
+        calculateDynamicRanks(288); // 288 total system target days
+
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        const todayStr = getFormattedDate(now);
+        document.getElementById('date-display').innerText = todayStr;
+
+        const isOfficialMode = now >= startDate;
+        const banner = document.getElementById('mode-banner');
+
+        if (!isOfficialMode) {
+            banner.className = "mode-banner trial";
+            banner.innerText = "Trial Mode (Resets at midnight - XP won't save)";
+            handleTrialReset(todayStr);
+        } else {
+            banner.className = "mode-banner official";
+            banner.innerText = "Official System Active";
+            handleOfficialProgress(now, todayStr);
+        }
+
+        updateUI(isOfficialMode);
+    }
+
+    function saveSystemSetup() {
+        const titleInput = document.getElementById('modal-title-input').value.trim();
+        const dateInput = document.getElementById('modal-date-input').value;
+
+        if (titleInput !== "" && dateInput !== "") {
+            playerTitle = titleInput.toUpperCase();
+            savedStartDateStr = dateInput;
+
+            localStorage.setItem('sys_playerTitle', playerTitle);
+            localStorage.setItem('sys_startDate', savedStartDateStr);
+
+            startDate = new Date(savedStartDateStr);
+            startDate.setHours(0, 0, 0, 0);
+
+            document.getElementById('title-modal').style.display = 'none';
+            initSystem();
+        } else {
+            alert("Please enter both Player Title and Start Date.");
+        }
+    }
+
+    function handleTrialReset(todayStr) {
+        if (lastProcessedDateStr !== todayStr) {
+            localStorage.setItem('sys_completedQuests', JSON.stringify([]));
+            localStorage.setItem('sys_lastProcessedDate', todayStr);
+        }
+        loadQuestStates();
+    }
+
+    function handleOfficialProgress(now, todayStr) {
+        const diffTime = now.getTime() - startDate.getTime();
+        const totalDaysPassed = Math.floor(diffTime / (1000 * 3600 * 24)) + 1;
+        const currentDayNumber = Math.min(Math.max(totalDaysPassed, 1), 288);
+
+        document.getElementById('day-counter-display').innerText = `DAY ${currentDayNumber} / 288`;
+
+        if (lastProcessedDateStr !== todayStr) {
+            if (lastProcessedDateStr !== '') {
+                daysInCurrentRank++;
+                checkRankAdvancement();
+            }
+            localStorage.setItem('sys_completedQuests', JSON.stringify([]));
+            localStorage.setItem('sys_lastProcessedDate', todayStr);
+            localStorage.setItem('sys_daysInRank', daysInCurrentRank);
+        }
+
+        loadQuestStates();
+    }
+
+    function checkRankAdvancement() {
+        if (ranksConfig.length === 0) return;
+        const currentConfig = ranksConfig[rankIndex];
+        
+        if (rankIndex >= ranksConfig.length - 1) return;
+
+        if (daysInCurrentRank >= currentConfig.days) {
+            const maxPossibleXP = currentConfig.days * currentConfig.maxDailyXP;
+            const passXP = maxPossibleXP * 0.70;
+
+            if (rankXP >= passXP) {
+                rankIndex++;
+                alert(`SYSTEM ANNOUNCEMENT: You successfully passed Rank ${ranksConfig[rankIndex - 1].rank}! Promoted to Rank ${ranksConfig[rankIndex].rank}!`);
+            } else {
+                alert(`SYSTEM WARNING: Rank ${currentConfig.rank} evaluation failed (<70% XP). Rank reset!`);
+            }
+
+            rankXP = 0;
+            daysInCurrentRank = 0;
+            localStorage.setItem('sys_rankIndex', rankIndex);
+            localStorage.setItem('sys_rankXP', rankXP);
+            localStorage.setItem('sys_daysInRank', daysInCurrentRank);
+        }
+    }
+
+    function loadQuestStates() {
+        const completed = JSON.parse(localStorage.getItem('sys_completedQuests')) || [];
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            const qName = cb.closest('.quest-item').querySelector('.quest-name').innerText;
+            if (completed.includes(qName)) {
+                cb.checked = true;
+                cb.closest('.quest-item').classList.add('completed');
+            } else {
+                cb.checked = false;
+                cb.closest('.quest-item').classList.remove('completed');
+            }
+        });
+    }
+
+    function toggleQuest(checkbox) {
+        const xpValue = parseFloat(checkbox.getAttribute('data-xp'));
+        const questItem = checkbox.closest('.quest-item');
+        const questName = questItem.querySelector('.quest-name').innerText;
+        let completed = JSON.parse(localStorage.getItem('sys_completedQuests')) || [];
+        
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        const isOfficialMode = startDate && (now >= startDate);
+
+        if (checkbox.checked) {
+            questItem.classList.add('completed');
+            completed.push(questName);
+            if (isOfficialMode) rankXP += xpValue;
+        } else {
+            questItem.classList.remove('completed');
+            completed = completed.filter(name => name !== questName);
+            if (isOfficialMode) rankXP = Math.max(0, rankXP - xpValue);
+        }
+
+        localStorage.setItem('sys_completedQuests', JSON.stringify(completed));
+        if (isOfficialMode) localStorage.setItem('sys_rankXP', rankXP);
+
+        updateUI(isOfficialMode);
+    }
+
+    function updateUI(isOfficialMode) {
+        if (ranksConfig.length === 0) return;
+
+        const currentConfig = ranksConfig[rankIndex];
+        const isMaxRank = (rankIndex === ranksConfig.length - 1);
+
+        document.getElementById('rank-display').innerText = currentConfig.rank;
+
+        if (isMaxRank) {
+            document.getElementById('rank-duration').innerText = "MAX RANK";
+            document.getElementById('exp-bar').style.width = '100%';
+            document.getElementById('exp-text').innerText = "UNLIMITED POWER (MAX LEVEL ACHIEVED)";
+            return;
+        }
+
+        const maxRankXP = currentConfig.days * currentConfig.maxDailyXP;
+        
+        let displayXP = rankXP;
+        if (!isOfficialMode) {
+            displayXP = 0;
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                displayXP += parseFloat(cb.getAttribute('data-xp'));
+            });
+        }
+
+        const percentage = Math.min((displayXP / maxRankXP) * 100, 100);
+
+        document.getElementById('rank-duration').innerText = `${currentConfig.days} Days`;
+        document.getElementById('exp-bar').style.width = percentage + '%';
+        document.getElementById('exp-text').innerText = `${displayXP.toFixed(1)} / ${maxRankXP} XP (${percentage.toFixed(1)}%)`;
+    }
+
+    function switchTab(tabId, evt) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.quest-list').forEach(list => list.classList.remove('active'));
+        
+        evt.currentTarget.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+
+        const academicSubs = document.getElementById('academic-subs');
+        if (tabId === 'academic') {
+            academicSubs.classList.add('active');
+        } else {
+            academicSubs.classList.remove('active');
+        }
+    }
+
+    function switchAcademicSub(subId, evt) {
+        document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.subcategory-group').forEach(group => group.classList.remove('active'));
+        
+        evt.currentTarget.classList.add('active');
+        document.getElementById(subId).classList.add('active');
+    }
+
+    initSystem();
+</script>
+
+</body>
+</html>
