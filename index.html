@@ -201,8 +201,7 @@
             display: flex; gap: 8px; margin-bottom: 8px; align-items: center;
         }
         .edit-task-row .modal-input { margin-bottom: 0; padding: 8px; }
-        .edit-task-name { flex: 3; text-align: left; }
-        .edit-task-xp { flex: 1; text-align: center; }
+        .edit-task-name { flex: 4; text-align: left; }
         
         .delete-btn {
             background: transparent; border: 1px solid var(--danger-red); color: var(--danger-red);
@@ -404,8 +403,8 @@
 
         <div class="exp-container">
             <div class="exp-label">
-                <span id="exp-label-text">RANK XP PROGRESS (Min 70% to Pass)</span>
-                <span id="exp-text">0 / 300 XP (0%)</span>
+                <span id="exp-label-text">RANK XP PROGRESS (Min 80% to Pass)</span>
+                <span id="exp-text">0 / 100 XP (0%)</span>
             </div>
             <div class="exp-bar-bg">
                 <div class="exp-bar-fill" id="exp-bar"></div>
@@ -445,34 +444,34 @@
         planName: "PLAN",
         quests: {
             schoolday: [
-                { name: "Early Wake Up (4:00 AM)", xp: 1.0 },
-                { name: "Morning Session (6:00 - 7:00 AM)", xp: 1.0 },
-                { name: "Study Session 1 (2:00 - 6:00 PM)", xp: 4.0 },
-                { name: "Study Session 2 (6:30 - 8:30 PM)", xp: 2.0 },
-                { name: "Sleep Schedule (10:00 PM)", xp: 1.0 }
+                { name: "Early Wake Up (4:00 AM)" },
+                { name: "Morning Session (6:00 - 7:00 AM)" },
+                { name: "Study Session 1 (2:00 - 6:00 PM)" },
+                { name: "Study Session 2 (6:30 - 8:30 PM)" },
+                { name: "Sleep Schedule (10:00 PM)" }
             ],
             dayoff: [
-                { name: "Early Wake Up (4:00 AM)", xp: 1.0 },
-                { name: "Study Session 1 (6:00 - 10:00 AM)", xp: 4.0 },
-                { name: "Study Session 2 (10:30 AM - 2:00 PM)", xp: 3.5 },
-                { name: "Reading & Free Study", xp: 1.0 },
-                { name: "Review & Summarize", xp: 4.0 },
-                { name: "Sleep Schedule (10:00 PM)", xp: 1.0 }
+                { name: "Early Wake Up (4:00 AM)" },
+                { name: "Study Session 1 (6:00 - 10:00 AM)" },
+                { name: "Study Session 2 (10:30 AM - 2:00 PM)" },
+                { name: "Reading & Free Study" },
+                { name: "Review & Summarize" },
+                { name: "Sleep Schedule (10:00 PM)" }
             ],
             religious: [
-                { name: "Fajr Prayer", xp: 1.0 },
-                { name: "Dhuhr Prayer", xp: 1.0 },
-                { name: "Asr Prayer", xp: 1.0 },
-                { name: "Maghrib Prayer", xp: 1.0 },
-                { name: "Isha Prayer", xp: 1.0 },
-                { name: "Morning & Evening Athkar", xp: 2.0 },
-                { name: "Daily Quran Portion", xp: 2.0 }
+                { name: "Fajr Prayer" },
+                { name: "Dhuhr Prayer" },
+                { name: "Asr Prayer" },
+                { name: "Maghrib Prayer" },
+                { name: "Isha Prayer" },
+                { name: "Morning & Evening Athkar" },
+                { name: "Daily Quran Portion" }
             ],
             workoutday: [
-                { name: "Gym Workout Routine", xp: 3.0 }
+                { name: "Gym Workout Routine" }
             ],
             restday: [
-                { name: "Rest & Recovery Day", xp: 1.0 }
+                { name: "Rest & Recovery Day" }
             ]
         }
     };
@@ -612,17 +611,6 @@
         document.getElementById('system-alert-modal').style.display = 'none';
     }
 
-    function getMaxDailyXP() {
-        let religiousTotal = (currentPlan.quests.religious || []).reduce((sum, q) => sum + parseFloat(q.xp || 0), 0);
-        let schoolDayTotal = (currentPlan.quests.schoolday || []).reduce((sum, q) => sum + parseFloat(q.xp || 0), 0);
-        let dayOffTotal = (currentPlan.quests.dayoff || []).reduce((sum, q) => sum + parseFloat(q.xp || 0), 0);
-        
-        let workoutTotal = (currentPlan.quests.workoutday || []).reduce((sum, q) => sum + parseFloat(q.xp || 0), 0);
-        let restTotal = (currentPlan.quests.restday || []).reduce((sum, q) => sum + parseFloat(q.xp || 0), 0);
-        
-        return religiousTotal + Math.max(schoolDayTotal, dayOffTotal) + Math.max(workoutTotal, restTotal);
-    }
-
     function renderMainQuests() {
         const containers = {
             schoolday: document.getElementById('schoolday'),
@@ -642,10 +630,9 @@
                     <div class="quest-item">
                         <div class="quest-details">
                             <span class="quest-name">${q.name}</span>
-                            <span class="quest-reward">+${parseFloat(q.xp).toFixed(1)} XP</span>
                         </div>
                         <label class="checkbox-container">
-                            <input type="checkbox" data-category="${category}" data-xp="${q.xp}" onchange="toggleQuest(this)">
+                            <input type="checkbox" data-category="${category}" onchange="toggleQuest(this)">
                             <span class="checkmark"></span>
                         </label>
                     </div>`;
@@ -679,7 +666,7 @@
             editorDiv.insertAdjacentHTML('beforeend', sectionHTML);
             if (currentPlan.quests[category]) {
                 currentPlan.quests[category].forEach(q => {
-                    addEditorRow(category, q.name, q.xp);
+                    addEditorRow(category, q.name);
                 });
             }
         }
@@ -690,13 +677,12 @@
         document.getElementById('plan-editor-modal').style.display = 'none';
     }
 
-    function addEditorRow(category, name = "", xp = 1.0) {
+    function addEditorRow(category, name = "") {
         const container = document.getElementById(`edit-cat-${category}`);
         const row = document.createElement('div');
         row.className = 'edit-task-row';
         row.innerHTML = `
             <input type="text" class="modal-input edit-task-name" value="${name}" placeholder="Quest Name">
-            <input type="number" class="modal-input edit-task-xp" value="${xp}" step="0.5" min="0" placeholder="XP">
             <button class="delete-btn" onclick="this.parentElement.remove()">✕</button>
         `;
         container.appendChild(row);
@@ -710,9 +696,8 @@
             const rows = document.getElementById(`edit-cat-${category}`).querySelectorAll('.edit-task-row');
             rows.forEach(row => {
                 const name = row.querySelector('.edit-task-name').value.trim();
-                const xp = parseFloat(row.querySelector('.edit-task-xp').value) || 0;
                 if(name !== "") {
-                    newPlan.quests[category].push({ name, xp });
+                    newPlan.quests[category].push({ name });
                 }
             });
         }
@@ -814,16 +799,14 @@
         const weights = [1, 1.35, 1.7, 2.05, 2.9]; 
         const totalWeight = weights.reduce((a, b) => a + b, 0);
 
-        const currentMaxDailyXP = getMaxDailyXP();
-
         ranksConfig = [
-            { rank: 'F', days: fDays, maxDailyXP: currentMaxDailyXP },
-            { rank: 'E', days: Math.round((weights[0] / totalWeight) * remainingDays), maxDailyXP: currentMaxDailyXP },
-            { rank: 'D', days: Math.round((weights[1] / totalWeight) * remainingDays), maxDailyXP: currentMaxDailyXP },
-            { rank: 'C', days: Math.round((weights[2] / totalWeight) * remainingDays), maxDailyXP: currentMaxDailyXP },
-            { rank: 'B', days: Math.round((weights[3] / totalWeight) * remainingDays), maxDailyXP: currentMaxDailyXP },
-            { rank: 'A', days: Math.round((weights[4] / totalWeight) * remainingDays), maxDailyXP: currentMaxDailyXP },
-            { rank: 'S', days: 0, maxDailyXP: currentMaxDailyXP }
+            { rank: 'F', days: fDays, fixedTotalXP: 100 },
+            { rank: 'E', days: Math.round((weights[0] / totalWeight) * remainingDays), fixedTotalXP: 100 },
+            { rank: 'D', days: Math.round((weights[1] / totalWeight) * remainingDays), fixedTotalXP: 100 },
+            { rank: 'C', days: Math.round((weights[2] / totalWeight) * remainingDays), fixedTotalXP: 100 },
+            { rank: 'B', days: Math.round((weights[3] / totalWeight) * remainingDays), fixedTotalXP: 100 },
+            { rank: 'A', days: Math.round((weights[4] / totalWeight) * remainingDays), fixedTotalXP: 100 },
+            { rank: 'S', days: 0, fixedTotalXP: 100 }
         ];
     }
 
@@ -940,13 +923,14 @@
         if (ranksConfig.length === 0 || rankIndex >= ranksConfig.length - 1) return;
         const currentConfig = ranksConfig[rankIndex];
         if (daysInCurrentRank >= currentConfig.days) {
-            const passXP = (currentConfig.days * currentConfig.maxDailyXP) * 0.70;
+            const passXP = currentConfig.fixedTotalXP * 0.80; // نسبة النجاح 80%
             if (rankXP >= passXP) {
                 rankIndex++;
                 playSystemSound('rankup');
                 showSystemAlert(`SYSTEM ANNOUNCEMENT:<br>Promoted to Rank ${ranksConfig[rankIndex].rank}!`, `<button class="modal-btn" style="background: var(--neon-green); color: #000;" onclick="closeSystemAlert()">CONFIRM</button>`);
             } else {
-                showSystemAlert(`SYSTEM WARNING:<br>Rank ${currentConfig.rank} evaluation failed. Rank reset!`, `<button class="modal-btn" style="background: var(--danger-red); color: #fff;" onclick="closeSystemAlert()">ACKNOWLEDGE</button>`);
+                showSystemAlert(`SYSTEM WARNING:<br>Rank ${currentConfig.rank} evaluation failed (Target 80% not reached). Rank reset!`, `<button class="modal-btn" style="background: var(--danger-red); color: #fff;" onclick="closeSystemAlert()">ACKNOWLEDGE</button>`);
+                rankIndex = 0;
             }
             rankXP = 0; daysInCurrentRank = 0;
             localStorage.setItem('sys_rankIndex', rankIndex);
@@ -962,15 +946,22 @@
             const cb = item.querySelector('input[type="checkbox"]');
             const qName = item.querySelector('.quest-name').innerText;
             if (completed.includes(qName)) {
-                cb.checked = true; item.classList.add('completed');
+                cb.checked = true;
+                cb.disabled = true; // منع التعديل أو التكرار لنفس اليوم بمجرد إتمامها
+                item.classList.add('completed');
             } else {
-                cb.checked = false; item.classList.remove('completed');
+                cb.checked = false;
+                cb.disabled = false;
+                item.classList.remove('completed');
             }
         });
     }
 
+    function getActiveCategoryQuests(category) {
+        return currentPlan.quests[category] || [];
+    }
+
     function toggleQuest(checkbox) {
-        const xpValue = parseFloat(checkbox.getAttribute('data-xp'));
         const questItem = checkbox.closest('.quest-item');
         const questName = questItem.querySelector('.quest-name').innerText;
         let completed = JSON.parse(localStorage.getItem('sys_completedQuests')) || [];
@@ -978,26 +969,56 @@
 
         if (checkbox.checked) {
             questItem.classList.add('completed');
+            checkbox.disabled = true; // قفل الزر لمنع إلغائها أو التكرار لليوم الحالي
             completed.push(questName);
-            if (isOfficialMode) rankXP += xpValue;
             playSystemSound('complete');
-        } else {
-            questItem.classList.remove('completed');
-            completed = completed.filter(name => name !== questName);
-            if (isOfficialMode) rankXP = Math.max(0, rankXP - xpValue);
         }
 
         localStorage.setItem('sys_completedQuests', JSON.stringify(completed));
-        if (isOfficialMode) localStorage.setItem('sys_rankXP', rankXP);
+
+        if (isOfficialMode) {
+            rankXP = calculateDailyProportionalXP();
+            localStorage.setItem('sys_rankXP', rankXP);
+        }
         updateUI(isOfficialMode);
+    }
+
+    function calculateDailyProportionalXP() {
+        const currentConfig = ranksConfig[rankIndex];
+        if (!currentConfig || currentConfig.days === 0) return rankXP;
+
+        const pointsPerDay = currentConfig.fixedTotalXP / currentConfig.days;
+        const categories = ['religious', 'academic', 'physical'];
+        let dayEarnedXP = 0;
+        const sectionWeight = pointsPerDay / 3;
+
+        categories.forEach(cat => {
+            let activeList = [];
+            if (cat === 'academic') {
+                const isSchoolDay = document.getElementById('btn-schoolday').classList.contains('active');
+                activeList = getActiveCategoryQuests(isSchoolDay ? 'schoolday' : 'dayoff');
+            } else if (cat === 'physical') {
+                const isWorkoutDay = document.getElementById('btn-workoutday').classList.contains('active');
+                activeList = getActiveCategoryQuests(isWorkoutDay ? 'workoutday' : 'restday');
+            } else {
+                activeList = getActiveCategoryQuests('religious');
+            }
+
+            if (activeList.length === 0) return;
+
+            const completed = JSON.parse(localStorage.getItem('sys_completedQuests')) || [];
+            let completedCount = activeList.filter(q => completed.includes(q.name)).length;
+            let sectionRatio = completedCount / activeList.length;
+
+            dayEarnedXP += sectionRatio * sectionWeight;
+        });
+
+        return Math.min(currentConfig.fixedTotalXP, rankXP + (dayEarnedXP));
     }
 
     function updateUI(isOfficialMode) {
         if (ranksConfig.length === 0) return;
         
-        const dynamicMaxDailyXP = getMaxDailyXP();
-        ranksConfig[rankIndex].maxDailyXP = dynamicMaxDailyXP;
-
         const currentConfig = ranksConfig[rankIndex];
         document.getElementById('rank-display').innerText = currentConfig.rank;
 
@@ -1008,14 +1029,8 @@
             return;
         }
 
-        const maxRankXP = currentConfig.days * currentConfig.maxDailyXP;
+        const maxRankXP = currentConfig.fixedTotalXP;
         let displayXP = rankXP;
-        if (!isOfficialMode) {
-            displayXP = 0;
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-                displayXP += parseFloat(cb.getAttribute('data-xp'));
-            });
-        }
         
         const percentage = Math.min((displayXP / maxRankXP) * 100, 100);
         document.getElementById('rank-duration').innerText = `${currentConfig.days} Days`;
@@ -1048,7 +1063,7 @@
         const targetName = subId === 'schoolday' ? 'School Day' : 'Day Off';
         let alertHtml = `
             <div style="margin-bottom: 15px; font-size: 13px; color: var(--glow-purple);">
-                Are you sure today is (${targetName})?<br>Quests and progress from the opposite category will be cleared to prevent XP overlap.
+                Are you sure today is (${targetName})?<br>Quests from the opposite category will be hidden.
             </div>
             <button class="modal-btn" style="background: var(--neon-green); color: #000;" onclick="confirmSwitchAcademicSub('${subId}')">Confirm</button>
             <button class="modal-btn" style="background: transparent; border-color: var(--danger-red); color: var(--danger-red); box-shadow: none;" onclick="closeSystemAlert()">Cancel</button>
@@ -1058,29 +1073,6 @@
 
     function confirmSwitchAcademicSub(subId) {
         closeSystemAlert();
-        
-        const oppositeSub = subId === 'schoolday' ? 'dayoff' : 'schoolday';
-        let completed = JSON.parse(localStorage.getItem('sys_completedQuests')) || [];
-        const oppositeQuests = currentPlan.quests[oppositeSub] || [];
-        const oppositeNames = oppositeQuests.map(q => q.name);
-        
-        let removedXP = 0;
-        document.querySelectorAll('.quest-item').forEach(item => {
-            const cb = item.querySelector('input[type="checkbox"]');
-            const cat = cb.getAttribute('data-category');
-            if (cat === oppositeSub && cb.checked) {
-                removedXP += parseFloat(cb.getAttribute('data-xp'));
-            }
-        });
-
-        completed = completed.filter(name => !oppositeNames.includes(name));
-        localStorage.setItem('sys_completedQuests', JSON.stringify(completed));
-
-        const isOfficialMode = startDate && (new Date().setHours(0, 0, 0, 0) >= startDate.getTime());
-        if (isOfficialMode && removedXP > 0) {
-            rankXP = Math.max(0, rankXP - removedXP);
-            localStorage.setItem('sys_rankXP', rankXP);
-        }
 
         document.querySelectorAll('#academic-subs .sub-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('#academic .subcategory-group').forEach(group => group.classList.remove('active'));
@@ -1089,6 +1081,11 @@
         document.getElementById(subId).classList.add('active');
 
         loadQuestStates();
+        const isOfficialMode = startDate && (new Date().setHours(0, 0, 0, 0) >= startDate.getTime());
+        if (isOfficialMode) {
+            rankXP = calculateDailyProportionalXP();
+            localStorage.setItem('sys_rankXP', rankXP);
+        }
         updateUI(isOfficialMode);
     }
 
@@ -1096,7 +1093,7 @@
         const targetName = subId === 'workoutday' ? 'Workout Day' : 'Rest Day';
         let alertHtml = `
             <div style="margin-bottom: 15px; font-size: 13px; color: var(--glow-purple);">
-                Are you sure today is (${targetName})?<br>Quests from the opposite physical category will be cleared to prevent XP overlap.
+                Are you sure today is (${targetName})?<br>Quests from the opposite physical category will be hidden.
             </div>
             <button class="modal-btn" style="background: var(--neon-green); color: #000;" onclick="confirmSwitchPhysicalSub('${subId}')">Confirm</button>
             <button class="modal-btn" style="background: transparent; border-color: var(--danger-red); color: var(--danger-red); box-shadow: none;" onclick="closeSystemAlert()">Cancel</button>
@@ -1106,29 +1103,6 @@
 
     function confirmSwitchPhysicalSub(subId) {
         closeSystemAlert();
-        
-        const oppositeSub = subId === 'workoutday' ? 'restday' : 'workoutday';
-        let completed = JSON.parse(localStorage.getItem('sys_completedQuests')) || [];
-        const oppositeQuests = currentPlan.quests[oppositeSub] || [];
-        const oppositeNames = oppositeQuests.map(q => q.name);
-        
-        let removedXP = 0;
-        document.querySelectorAll('.quest-item').forEach(item => {
-            const cb = item.querySelector('input[type="checkbox"]');
-            const cat = cb.getAttribute('data-category');
-            if (cat === oppositeSub && cb.checked) {
-                removedXP += parseFloat(cb.getAttribute('data-xp'));
-            }
-        });
-
-        completed = completed.filter(name => !oppositeNames.includes(name));
-        localStorage.setItem('sys_completedQuests', JSON.stringify(completed));
-
-        const isOfficialMode = startDate && (new Date().setHours(0, 0, 0, 0) >= startDate.getTime());
-        if (isOfficialMode && removedXP > 0) {
-            rankXP = Math.max(0, rankXP - removedXP);
-            localStorage.setItem('sys_rankXP', rankXP);
-        }
 
         document.querySelectorAll('#physical-subs .sub-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('#physical .subcategory-group').forEach(group => group.classList.remove('active'));
@@ -1137,6 +1111,11 @@
         document.getElementById(subId).classList.add('active');
 
         loadQuestStates();
+        const isOfficialMode = startDate && (new Date().setHours(0, 0, 0, 0) >= startDate.getTime());
+        if (isOfficialMode) {
+            rankXP = calculateDailyProportionalXP();
+            localStorage.setItem('sys_rankXP', rankXP);
+        }
         updateUI(isOfficialMode);
     }
 
