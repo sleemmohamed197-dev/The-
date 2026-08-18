@@ -1743,6 +1743,42 @@ function confirmSwitchPhysicalSub(subId) {
 }
 
 initSystem();
+   // [ نظام مزامنة التقدم وحفظ نقاط الخبرة في السيرفر ]
+window.saveHunterData = async function(exp, rank) {
+    const user = window.firebaseAuth.currentUser;
+    if (!user) return;
+    try {
+        await window.setDoc(window.doc(window.db, "hunters", user.uid), {
+            exp: exp,
+            rank: rank,
+            lastUpdated: new Date().toISOString()
+        }, { merge: true });
+    } catch (e) {
+        console.error("خطأ في حفظ البيانات:", e);
+    }
+};
+
+window.loadHunterData = async function() {
+    const user = window.firebaseAuth.currentUser;
+    if (!user) return;
+    try {
+        const docSnap = await window.getDoc(window.doc(window.db, "hunters", user.uid));
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (typeof window.updateUIFromCloud === "function") {
+                window.updateUIFromCloud(data.exp, data.rank);
+            }
+        }
+    } catch (e) {
+        console.error("خطأ في جلب البيانات:", e);
+    }
+};
+
+window.onAuthStateChanged(window.firebaseAuth, (user) => {
+    if (user) {
+        window.loadHunterData();
+    }
+}); 
 </script>
 </body>
 </html>
