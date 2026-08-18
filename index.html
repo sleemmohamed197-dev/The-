@@ -5,6 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solo Leveling Quest System - Hunter Authentication Hub</title>
 <!-- Firebase SDK Integration Module -->
+    <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDFsAU43ysNZHUr4eWsI2oC1OnEzCEyPgc",
+    authDomain: "solo-leveling-752ab.firebaseapp.com",
+    projectId: "solo-leveling-752ab",
+    storageBucket: "solo-leveling-752ab.firebasestorage.app",
+    messagingSenderId: "868323324231",
+    appId: "1:868323324231:web:8171ae298c9b4406d69c62"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.firebaseApp = app;
+window.firebaseAuth = auth;
+window.db = db;
+window.doc = doc;
+window.setDoc = setDoc;
+window.getDoc = getDoc;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.sendPasswordResetEmail = sendPasswordResetEmail;
+window.onAuthStateChanged = onAuthStateChanged;
+window.signOut = signOut;
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
