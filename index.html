@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solo Leveling Quest System - Hunter Authentication Hub</title>
-<!-- Firebase SDK Integration Module -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
@@ -835,7 +834,6 @@ body {
 </head>
 <body class="theme-rank-f">
 
-<!-- [PURPLE AUTHENTICATION SYSTEM POPUP OVERLAY] -->
 <div id="auth-overlay" class="auth-overlay" style="display: none;">
     <div class="auth-box">
         <div class="system-auth-header">
@@ -871,7 +869,7 @@ body {
         <input type="text" id="modal-title-input" class="modal-input" placeholder="e.g. SHADOW MONARCH" autocomplete="off">
         <label class="modal-label">START DATE</label>
         <input type="date" id="modal-date-input" class="modal-input">
-        <label class="modal-label">END DATE (ثانوية عامة)</label>
+        <label class="modal-label">END DATE</label>
         <input type="date" id="modal-end-date-input" class="modal-input">
         <button class="modal-btn" onclick="saveSystemSetup()">Initialize System</button>
     </div>
@@ -890,7 +888,7 @@ body {
 
 <div id="themes-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content" style="max-width: 380px;">
-        <div class="modal-title">SYSTEM THEMES (RANK UNLOCKED)</div>
+        <div class="modal-title">SYSTEM THEMES</div>
         <div id="themes-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;"></div>
         <button class="modal-btn" onclick="closeThemesModal()">Close</button>
     </div>
@@ -936,7 +934,7 @@ body {
             <span id="date-display">--/--/----</span>
         </div>
         <div id="mode-banner" class="mode-banner trial">
-            Trial Period (Resets at 12:00 AM)
+            Trial Period
         </div>
         <div class="rank-info">
             <span>RANK: <span class="rank-badge" id="rank-display">F</span></span>
@@ -944,7 +942,7 @@ body {
         </div>
         <div class="exp-container">
             <div class="exp-label">
-                <span id="exp-label-text">RANK XP PROGRESS (Min 70% to Pass)</span>
+                <span id="exp-label-text">RANK XP PROGRESS</span>
                 <span id="exp-text">0 / 100 XP (0%)</span>
             </div>
             <div class="exp-bar-bg">
@@ -1351,6 +1349,10 @@ function saveEditedPlan() {
     closePlanEditor();
     renderMainQuests();
     updateUI(startDate && (new Date().setHours(0,0,0,0) >= startDate.getTime()));
+    
+    if (window.firebaseAuth.currentUser) {
+        saveHunterData(rankXP, ranksConfig[rankIndex]?.rank || 'F');
+    }
 }
 
 function openPomodoroModal() {
@@ -1479,7 +1481,7 @@ function initSystem() {
     const banner = document.getElementById('mode-banner');
     if (!isOfficialMode) {
         banner.className = "mode-banner trial";
-        banner.innerText = "Trial Mode (Resets at midnight - XP won't save)";
+        banner.innerText = "Trial Mode";
         handleTrialReset(todayStr);
     } else {
         banner.className = "mode-banner official";
@@ -1514,6 +1516,10 @@ function saveSystemSetup() {
 
         document.getElementById('title-modal').style.display = 'none';
         initSystem();
+        
+        if (window.firebaseAuth.currentUser) {
+            saveHunterData(rankXP, ranksConfig[rankIndex]?.rank || 'F');
+        }
     } else {
         alert("Please enter Player Title, Start Date, and End Date.");
     }
@@ -1635,7 +1641,7 @@ function updateUI(isOfficialMode) {
     const percentage = Math.min((displayXP / maxRankXP) * 100, 100);
     document.getElementById('rank-duration').innerText = `${currentConfig.days} Days`;
     document.getElementById('exp-bar').style.width = percentage + '%';
-    document.getElementById('exp-text').innerText = `${displayXP.toFixed(1)} / ${maxRankXP} XP (${percentage.toFixed(1)}% - Target: 70%)`;
+    document.getElementById('exp-text').innerText = `${displayXP.toFixed(1)} / ${maxRankXP} XP (${percentage.toFixed(1)}%)`;
 }
 
 function switchTab(tabId, evt) {
@@ -1692,6 +1698,7 @@ function confirmSwitchAcademicSub(subId) {
     if (isOfficialMode && removedXP > 0) {
         rankXP = Math.max(0, rankXP - removedXP);
         localStorage.setItem('sys_rankXP', rankXP);
+        saveHunterData(rankXP, ranksConfig[rankIndex]?.rank || 'F');
     }
 
     document.querySelectorAll('#academic-subs .sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -1737,6 +1744,7 @@ function confirmSwitchPhysicalSub(subId) {
     if (isOfficialMode && removedXP > 0) {
         rankXP = Math.max(0, rankXP - removedXP);
         localStorage.setItem('sys_rankXP', rankXP);
+        saveHunterData(rankXP, ranksConfig[rankIndex]?.rank || 'F');
     }
 
     document.querySelectorAll('#physical-subs .sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -1750,28 +1758,68 @@ function confirmSwitchPhysicalSub(subId) {
 
 initSystem();
 
-// نظام مزامنة التقدم وحفظ نقاط الخبرة في السيرفر
 window.saveHunterData = async function(exp, rank) {
     const user = window.firebaseAuth.currentUser;
     if (!user) return;
+    const completedQuests = JSON.parse(localStorage.getItem('sys_completedQuests')) || [];
     try {
         await window.setDoc(window.doc(window.db, "hunters", user.uid), {
             exp: exp,
             rank: rank,
+            completedQuests: completedQuests,
+            activePlan: currentPlan,
+            playerTitle: playerTitle,
+            startDate: savedStartDateStr,
+            endDate: savedEndDateStr,
+            rankIndex: rankIndex,
+            daysInRank: daysInCurrentRank,
+            userTheme: userSelectedTheme,
             lastUpdated: new Date().toISOString()
         }, { merge: true });
-    } catch (e) {
-        console.error("خطأ في حفظ البيانات:", e);
-    }
+    } catch (e) {}
 };
 
-window.updateUIFromCloud = function(cloudExp, cloudRank) {
-    if (cloudExp !== undefined) {
-        rankXP = cloudExp;
+window.updateUIFromCloud = function(cloudData) {
+    if (cloudData.exp !== undefined) {
+        rankXP = cloudData.exp;
         localStorage.setItem('sys_rankXP', rankXP);
     }
-    const isOfficialMode = startDate && (new Date().setHours(0, 0, 0, 0) >= startDate.getTime());
-    updateUI(isOfficialMode);
+    if (cloudData.rankIndex !== undefined) {
+        rankIndex = cloudData.rankIndex;
+        localStorage.setItem('sys_rankIndex', rankIndex);
+    }
+    if (cloudData.daysInRank !== undefined) {
+        daysInCurrentRank = cloudData.daysInRank;
+        localStorage.setItem('sys_daysInRank', daysInCurrentRank);
+    }
+    if (cloudData.completedQuests) {
+        localStorage.setItem('sys_completedQuests', JSON.stringify(cloudData.completedQuests));
+    }
+    if (cloudData.activePlan) {
+        currentPlan = cloudData.activePlan;
+        localStorage.setItem('sys_activePlan', JSON.stringify(currentPlan));
+    }
+    if (cloudData.playerTitle) {
+        playerTitle = cloudData.playerTitle;
+        localStorage.setItem('sys_playerTitle', playerTitle);
+    }
+    if (cloudData.startDate) {
+        savedStartDateStr = cloudData.startDate;
+        localStorage.setItem('sys_startDate', savedStartDateStr);
+        startDate = new Date(savedStartDateStr);
+        startDate.setHours(0, 0, 0, 0);
+    }
+    if (cloudData.endDate) {
+        savedEndDateStr = cloudData.endDate;
+        localStorage.setItem('sys_endDate', savedEndDateStr);
+        endDate = new Date(savedEndDateStr);
+        endDate.setHours(0, 0, 0, 0);
+    }
+    if (cloudData.userTheme) {
+        userSelectedTheme = cloudData.userTheme;
+        localStorage.setItem('sys_userTheme', userSelectedTheme);
+    }
+    initSystem();
 };
 
 window.loadHunterData = async function() {
@@ -1782,12 +1830,12 @@ window.loadHunterData = async function() {
         if (docSnap.exists()) {
             const data = docSnap.data();
             if (typeof window.updateUIFromCloud === "function") {
-                window.updateUIFromCloud(data.exp, data.rank);
+                window.updateUIFromCloud(data);
             }
+        } else {
+            saveHunterData(rankXP, ranksConfig[rankIndex]?.rank || 'F');
         }
-    } catch (e) {
-        console.error("خطأ في جلب البيانات:", e);
-    }
+    } catch (e) {}
 };
 
 setTimeout(() => {
