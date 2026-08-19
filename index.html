@@ -1639,9 +1639,11 @@ function updateUI(isOfficialMode) {
     }
 
     const percentage = Math.min((displayXP / maxRankXP) * 100, 100);
+    const requiredPassXP = maxRankXP * 0.70;
+
     document.getElementById('rank-duration').innerText = `${currentConfig.days} Days`;
     document.getElementById('exp-bar').style.width = percentage + '%';
-    document.getElementById('exp-text').innerText = `${displayXP.toFixed(1)} / ${maxRankXP} XP (${percentage.toFixed(1)}%)`;
+    document.getElementById('exp-text').innerText = `${displayXP.toFixed(1)} / ${maxRankXP} XP (${percentage.toFixed(1)}%) — Target: ${requiredPassXP.toFixed(1)} XP (70%)`;
 }
 
 function switchTab(tabId, evt) {
