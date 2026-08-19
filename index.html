@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solo Leveling Quest System - Hunter Authentication Hub</title>
 <!-- Firebase SDK Integration Module -->
-    <script type="module">
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -36,30 +36,6 @@ window.onAuthStateChanged = onAuthStateChanged;
 window.signOut = signOut;
 </script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDFsAU43ysNZHUr4eWsI2oC1OnEzCEyPgc",
-    authDomain: "solo-leveling-752ab.firebaseapp.com",
-    projectId: "solo-leveling-752ab",
-    storageBucket: "solo-leveling-752ab.firebasestorage.app",
-    messagingSenderId: "868323324231",
-    appId: "1:868323324231:web:8171ae298c9b4406d69c62"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-window.firebaseApp = app;
-window.firebaseAuth = auth;
-window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-window.sendPasswordResetEmail = sendPasswordResetEmail;
-window.onAuthStateChanged = onAuthStateChanged;
-window.signOut = signOut;
-</script>
 <style>
 :root {
     --bg-color: #06070d;
@@ -1251,13 +1227,12 @@ function closeSystemAlert() {
     document.getElementById('system-alert-modal').style.display = 'none';
 }
 
-// حساب أوزان المهام تلقائياً بناءً على 5 نقاط إجمالية يومياً مقسمة على 3 فروع (دراسية/يوم، دينية، جسدية/يوم)
 function getTaskWeight(category, currentActiveAcademicSub, currentActivePhysicalSub) {
     let targetCategory = category;
     if (category === 'schoolday' || category === 'dayoff') targetCategory = currentActiveAcademicSub;
     if (category === 'workoutday' || category === 'restday') targetCategory = currentActivePhysicalSub;
 
-    let branchShare = 5.0 / 3.0; // 1.666 نقطة لكل فرع يومياً
+    let branchShare = 5.0 / 3.0;
     let tasksCount = 1;
 
     if (targetCategory === 'religious') {
@@ -1289,7 +1264,6 @@ function renderMainQuests() {
     }
     containers.religious.innerHTML = `<div class="section-header">Required & Daily Goals</div>`;
 
-    // معرفة الفرع النشط حالياً لعرض وزن المهمة بدقة
     const activeAcademicSub = document.querySelector('#academic-subs .sub-btn.active')?.id === 'btn-dayoff' ? 'dayoff' : 'schoolday';
     const activePhysicalSub = document.querySelector('#physical-subs .sub-btn.active')?.id === 'btn-restday' ? 'restday' : 'workoutday';
 
@@ -1461,8 +1435,6 @@ function calculateDynamicRanks(totalDays) {
     const remainingDays = Math.max(0, totalDays - fDays);
     const weights = [1, 1.35, 1.7, 2.05, 2.9];
     const totalWeight = weights.reduce((a, b) => a + b, 0);
-    
-    // إجمالي النقاط اليومية الثابت دائماً = 5 نقاط (طوبات) في اليوم الواحد
     const dailyPoints = 5.0;
     
     ranksConfig = [
@@ -1581,8 +1553,8 @@ function checkRankAdvancement() {
     if (ranksConfig.length === 0 || rankIndex >= ranksConfig.length - 1) return;
     const currentConfig = ranksConfig[rankIndex];
     if (daysInCurrentRank >= currentConfig.days) {
-        const totalRankMaxXP = currentConfig.days * currentConfig.maxDailyXP; // 100 طوبة للرانك F مثلاً
-        const passXP = totalRankMaxXP * 0.70; // حد النجاح 70%
+        const totalRankMaxXP = currentConfig.days * currentConfig.maxDailyXP;
+        const passXP = totalRankMaxXP * 0.70;
         if (rankXP >= passXP) {
             rankIndex++;
             playSystemSound('rankup');
@@ -1632,7 +1604,10 @@ function toggleQuest(checkbox) {
         if (isOfficialMode) rankXP = Math.max(0, rankXP - xpValue);
     }
     localStorage.setItem('sys_completedQuests', JSON.stringify(completed));
-    if (isOfficialMode) localStorage.setItem('sys_rankXP', rankXP);
+    if (isOfficialMode) {
+        localStorage.setItem('sys_rankXP', rankXP);
+        saveHunterData(rankXP, ranksConfig[rankIndex]?.rank || 'F');
+    }
     updateUI(isOfficialMode);
 }
 
@@ -1648,7 +1623,7 @@ function updateUI(isOfficialMode) {
         return;
     }
 
-    const maxRankXP = currentConfig.days * currentConfig.maxDailyXP; // إجمالي نقاط الرانك (مثلاً 100 لـ 20 يوم)
+    const maxRankXP = currentConfig.days * currentConfig.maxDailyXP;
     let displayXP = rankXP;
     if (!isOfficialMode) {
         displayXP = 0;
@@ -1724,7 +1699,7 @@ function confirmSwitchAcademicSub(subId) {
     document.getElementById(subId === 'schoolday' ? 'btn-schoolday' : 'btn-dayoff').classList.add('active');
     document.getElementById(subId).classList.add('active');
     
-    renderMainQuests(); // إعادة رسم المهام لتحديث أوزان الـ XP بناءً على التبويب النشط الجديد
+    renderMainQuests();
     updateUI(isOfficialMode);
 }
 
@@ -1769,12 +1744,13 @@ function confirmSwitchPhysicalSub(subId) {
     document.getElementById(subId === 'workoutday' ? 'btn-workoutday' : 'btn-restday').classList.add('active');
     document.getElementById(subId).classList.add('active');
     
-    renderMainQuests(); // إعادة رسم المهام لتحديث أوزان الـ XP
+    renderMainQuests();
     updateUI(isOfficialMode);
 }
 
 initSystem();
-   // [ نظام مزامنة التقدم وحفظ نقاط الخبرة في السيرفر ]
+
+// نظام مزامنة التقدم وحفظ نقاط الخبرة في السيرفر
 window.saveHunterData = async function(exp, rank) {
     const user = window.firebaseAuth.currentUser;
     if (!user) return;
@@ -1787,6 +1763,15 @@ window.saveHunterData = async function(exp, rank) {
     } catch (e) {
         console.error("خطأ في حفظ البيانات:", e);
     }
+};
+
+window.updateUIFromCloud = function(cloudExp, cloudRank) {
+    if (cloudExp !== undefined) {
+        rankXP = cloudExp;
+        localStorage.setItem('sys_rankXP', rankXP);
+    }
+    const isOfficialMode = startDate && (new Date().setHours(0, 0, 0, 0) >= startDate.getTime());
+    updateUI(isOfficialMode);
 };
 
 window.loadHunterData = async function() {
@@ -1805,11 +1790,15 @@ window.loadHunterData = async function() {
     }
 };
 
-window.onAuthStateChanged(window.firebaseAuth, (user) => {
-    if (user) {
-        window.loadHunterData();
+setTimeout(() => {
+    if (window.onAuthStateChanged && window.firebaseAuth) {
+        window.onAuthStateChanged(window.firebaseAuth, (user) => {
+            if (user) {
+                window.loadHunterData();
+            }
+        });
     }
-}); 
+}, 600);
 </script>
 </body>
 </html>
